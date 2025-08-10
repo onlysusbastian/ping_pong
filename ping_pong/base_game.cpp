@@ -32,8 +32,48 @@ public:
 		}
 	}
 };
-	
 
+
+//paddle class
+
+class Paddle
+{
+public :
+	float x, y;
+	float width, height;
+	int speed;
+
+	void Draw()
+	{
+		DrawRectangle(x, y, width, height, RAYWHITE);
+	}
+
+	void Update() {
+
+		if (IsKeyDown(KEY_UP))
+		{
+			y = y - speed;
+		}
+
+		if (IsKeyDown(KEY_DOWN))
+		{
+			y = y + speed;
+		}
+
+		if (y + height >= GetScreenHeight())
+		{
+			y = GetScreenHeight() - height;
+		}
+
+		if (y <= 0)
+		{
+			y = 0;
+		}
+	}
+
+};
+	
+Paddle player;
 
 //ball instance
 Ball ball;
@@ -55,7 +95,17 @@ int main()
 	ball.y = screen_height / 2;
 	ball.speed_x = 7;
 	ball.speed_y = 7;
-	//end initialization
+	
+
+	//initializing player
+	
+	player.height = 120;
+	player.width = 25;
+	player.x = screen_width - player.width - 10;
+	player.y = screen_height/2 - player.height/2;
+
+	player.speed = 6;
+
 
 	InitWindow(screen_width,screen_height, "pong game");
 
@@ -68,13 +118,20 @@ int main()
 		//upadate ball call
 
 		ball.Update();
+		player.Update();
 
 		DrawLine(screen_width / 2, 0, screen_width / 2, screen_height, WHITE);
 		
 		ball.Draw();
+		
 
-		DrawRectangle(15, screen_height / 2 - 60, 25, 120, RAYWHITE);
-		DrawRectangle(screen_width-40, screen_height / 2 - 60, 25, 120, RAYWHITE);
+
+		
+		DrawRectangle(10, screen_height/2 - 60, 25, 120, RAYWHITE);
+
+		player.Draw();
+
+
 		ClearBackground(BLACK);
 
 
