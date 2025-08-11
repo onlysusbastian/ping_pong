@@ -3,6 +3,8 @@
 
 using namespace std;
 
+
+//player point and cpu point count initialization
 int player_point=0;
 int cpu_point=0;
 
@@ -14,6 +16,8 @@ public:
 	float x, y;
 	int radius;
 	int speed_x, speed_y;
+
+	//draw method for the ball
 
 	void Draw() {
 		DrawCircle(x, y, radius, RAYWHITE);
@@ -35,6 +39,7 @@ public:
 			cpu_point++;
 
 			ResetBall();
+
 		}
 
 		if ( x - radius <= 0)
@@ -42,26 +47,28 @@ public:
 			player_point++;
 
 			ResetBall();
+
 		}
 	}
-
+	//function toi reset the ball after it touches the edge
 	void ResetBall()
 	{
 		x = GetScreenWidth() / 2;
 		y = GetScreenHeight()/ 2;
 		
-		int speed_choice[2] = { 1,1 };
-		speed_x *= speed_choice[GetRandomValue(0, 1)];
-		speed_y *= speed_choice[GetRandomValue(0, 1)];
-	}
+	int speed_choice[2] = { 1,1 };
+	speed_x *= speed_choice[GetRandomValue(0, 1)];
+	speed_y *= speed_choice[GetRandomValue(0, 1)];
+}
 };
 
 
-//paddle class
-
+//class to control the paddle
 class Paddle
 {
 protected :
+
+	//Limitmovement method can limit movement of the ball when the ball hits either side
 	void Limitmovement() {
 		
 		if (y + height >= GetScreenHeight())
@@ -79,11 +86,13 @@ public :
 	float width, height;
 	int speed;
 
+	//Draw method for the rectangle
 	void Draw()
 	{
 		DrawRectangle(x, y, width, height, RAYWHITE);
 	}
 
+	//Update method for the rectangle
 	void Update() {
 
 		if (IsKeyDown(KEY_UP))
@@ -100,7 +109,7 @@ public :
 
 
 };
-
+//cpu paddle class inherited 
 class CpuPaddle : public Paddle {
 
 public:
@@ -129,10 +138,9 @@ Ball ball;
 int main()
 
 {
-	cout << "starting the game" << endl;
-
-	const int screen_width = 1280;
-	const int screen_height= 800;
+	//seting up the constant screen width and height
+	const int screen_width = 1920;
+	const int screen_height= 1080;
 
 
 	SetTargetFPS(60);
@@ -145,15 +153,15 @@ int main()
 	ball.speed_y = 7;
 	
 
-	//initializing player
-	
+	//initializing player	
 	player.height = 120;
 	player.width = 25;
 	player.x = screen_width - player.width - 10;
 	player.y = screen_height/2 - player.height/2;
-
 	player.speed = 6;
 
+
+	//inittializing the cpu 
 	cpu.height = 120;
 	cpu.width = 25;
 	cpu.x = 10;
@@ -169,11 +177,12 @@ int main()
 	{
 		BeginDrawing();
 
-		//upadate ball call
-
+		//ball, player, cpu Update
 		ball.Update();
 		player.Update();
 		cpu.Update(ball.y);
+		
+		//collision checking
 
 		if (CheckCollisionCircleRec(Vector2{ ball.x,ball.y }, ball.radius, Rectangle{ player.x, player.y, player.width,player.height }))
 		{
@@ -186,12 +195,14 @@ int main()
 		}
 
 		DrawLine(screen_width / 2, 0, screen_width / 2, screen_height, WHITE);
-		
+	
+		//draw function to draw the player, ball and cpu
 		ball.Draw();
 		cpu.Draw();
-
 		player.Draw();
+		
 
+		//drawing the text of the score 
 		DrawText(TextFormat("%i", cpu_point), screen_width / 4 - 20, 20, 80, YELLOW);
 		DrawText(TextFormat("%i", player_point),3 * screen_width / 4 - 20, 20, 80, YELLOW);
 
